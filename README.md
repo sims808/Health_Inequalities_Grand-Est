@@ -14,13 +14,13 @@ Ce site web analyse la **répartition et l'accessibilité des hôpitaux de soins
 
 ```
 /
-├── grandest_10v_accueil.html        # Page d'accueil
-├── grandest_10v_analyse.html        # Carte Leaflet + Nuage de points D3.js
-├── grandest_10v_infographie.html    # Infographie & Politiques publiques
-├── dep_carte_sans-Photoroom.png     # Carte choroplèthe des départements
-├── DEPARTEMENT_GRANDEST_4326.geojson
-├── hopitaux_grand_est_4326.geojson
-└── Dist_Com_hopitaux_Grandest_4326.geojson
+├── index.html                                       # Page d'accueil
+├── carte_graphique.html                             # Carte interactive + Nuage de points D3.js
+├── infographie.html                                 # Infographie
+├── carte_accessibilite_departement_grandest.png     # Carte choroplèthe de l'accessibilité aux établissements par département
+├── DEPARTEMENT_GRANDEST_4326.geojson                # Contour de département
+├── hopitaux_grand_est_4326.geojson                  # Localisation des hôpitaux
+└── distance_commune_hopitaux_Grandest_4326.geojson  # Distance à un établissement la plus proche par commune
 ```
 
 
