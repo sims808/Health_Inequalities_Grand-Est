@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Carte &amp; Graphique · Grand Est · Soins aigus</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+:root{--bg:#F6F4F1;--bg-alt:#FFFFFF;--bg-card:#FFFFFF;--border:#DEDBD5;--shadow:rgba(40,30,20,0.09);--text:#111;--muted:#555;--accent:#BF3B30;--accent-lt:#F9ECE9;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;line-height:1.7;overflow-x:hidden;}
+nav{position:fixed;top:0;left:0;right:0;z-index:2000;display:flex;align-items:center;justify-content:space-between;padding:0 3rem;height:58px;background:rgba(246,244,241,0.96);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);box-shadow:0 2px 12px var(--shadow);}
+.nav-brand{font-family:'Sora',sans-serif;font-size:0.9rem;font-weight:700;color:var(--accent);}
+.nav-links{display:flex;gap:0;list-style:none;}
+.nav-links li a{display:block;padding:0 1.1rem;line-height:57px;font-size:0.72rem;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;color:var(--text);text-decoration:none;border-left:1px solid var(--border);transition:background 0.18s,color 0.18s;}
+.nav-links li:first-child a{border-left:none;}
+.nav-links li a:hover,.nav-links li a.active{background:var(--accent);color:white;}
+.page-hero{padding:7rem 6rem 3.5rem;background:var(--bg);border-bottom:1px solid var(--border);position:relative;overflow:hidden;}
+.page-hero::after{content:'';position:absolute;right:3rem;bottom:-2rem;font-family:'Sora',sans-serif;font-size:14rem;font-weight:800;color:rgba(191,59,48,0.05);line-height:1;pointer-events:none;}
+.ph-eyebrow{font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:0.24em;text-transform:uppercase;color:var(--accent);margin-bottom:0.7rem;}
+.ph-title{font-family:'Sora',sans-serif;font-size:clamp(1.6rem,3.5vw,3rem);font-weight:700;line-height:1.15;}
+.section{padding:4rem 6rem;}
+.section.alt{background:var(--bg-alt);}
+.sec-hd{display:flex;align-items:baseline;gap:1.4rem;margin-bottom:1.2rem;padding-bottom:0.9rem;border-bottom:1px solid var(--border);}
+.sec-tag{font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--accent);}
+.sec-title{font-family:'Sora',sans-serif;font-size:1.4rem;font-weight:700;}
+.sec-desc{max-width:90ch;font-size:1.02rem;line-height:1.9;color:#222;margin-bottom:1.4rem;}
+.sec-desc strong{color:var(--accent);}
+kbd{background:#F5F5F5;border:1px solid #DDD;padding:1px 6px;border-radius:3px;font-size:0.85em;}
+.source-line{font-family:'DM Mono',monospace;font-size:0.68rem;color:#888;text-align:left;margin-top:0.7rem;line-height:1.6;}
+.divider{height:1px;background:var(--border);}
+/* MAP */
+.map-frame{position:relative;border:1px solid var(--border);border-radius:12px;overflow:hidden;box-shadow:0 4px 24px var(--shadow);}
+#map{height:660px;width:100%;z-index:1;}
+#btn-reset{position:absolute;top:12px;right:12px;z-index:500;padding:6px 14px;background:white;border:1.5px solid var(--border);border-radius:7px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.78rem;font-weight:500;box-shadow:0 2px 8px var(--shadow);display:flex;align-items:center;gap:0.35rem;transition:all 0.15s;}
+#btn-reset:hover{background:var(--accent-lt);color:var(--accent);border-color:var(--accent);}
+#btn-types{position:absolute;bottom:24px;left:12px;z-index:500;width:36px;height:36px;background:white;border:1.5px solid #ccc;border-radius:5px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.1rem;box-shadow:0 2px 8px var(--shadow);transition:all 0.15s;}
+#btn-types:hover{background:var(--accent-lt);border-color:var(--accent);}
+#panel-types{display:none;position:absolute;bottom:70px;left:12px;z-index:500;background:rgba(255,255,255,0.98);border:1px solid var(--border);border-radius:10px;padding:0.9rem 1rem;min-width:340px;box-shadow:0 6px 24px var(--shadow);}
+#panel-types.open{display:block;}
+.panel-hd{font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--accent);padding-bottom:0.5rem;border-bottom:1px solid var(--border);margin-bottom:0.6rem;}
+#btn-all-hop{display:flex;align-items:center;gap:0.5rem;padding:0.38rem 0.6rem;margin-bottom:0.55rem;background:var(--accent-lt);border:1px solid rgba(191,59,48,0.2);border-radius:6px;cursor:pointer;font-size:0.82rem;color:var(--accent);font-weight:500;width:100%;transition:background 0.15s;}
+#btn-all-hop:hover{background:#f5d5d0;}
+#btn-all-hop.hidden-state{background:#eee;color:var(--text);border-color:var(--border);}
+.type-row{display:flex;align-items:flex-start;gap:0.55rem;padding:0.27rem 0;}
+.type-row input{width:13px;height:13px;margin-top:3px;cursor:pointer;accent-color:var(--accent);flex-shrink:0;}
+.type-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;margin-top:3px;}
+.type-lbl{font-size:0.82rem;line-height:1.4;}
+.map-legend{background:rgba(255,255,255,0.97);border:1px solid var(--border);border-radius:10px;padding:0.7rem 1rem;min-width:220px;box-shadow:0 4px 16px var(--shadow);}
+.leg-head{display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none;margin-bottom:0.4rem;}
+.leg-title{font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.19em;text-transform:uppercase;color:var(--accent);}
+.leg-item{display:flex;align-items:center;gap:0.6rem;padding:0.22rem 0;cursor:pointer;transition:opacity 0.2s;}
+.leg-item.off{opacity:0.3;}
+.leg-swatch{width:18px;height:11px;border-radius:3px;flex-shrink:0;border:1px solid rgba(0,0,0,0.08);}
+.leg-lbl{font-size:0.77rem;}
+.leaflet-tooltip.tip-commune{background:rgba(255,255,255,0.99)!important;border:2px solid #E0DDD8!important;border-radius:10px!important;color:#111!important;font-family:'DM Sans',sans-serif!important;font-size:0.85rem!important;padding:0.75rem 1.1rem!important;box-shadow:0 8px 28px rgba(40,30,20,0.16)!important;min-width:260px!important;max-width:320px!important;white-space:normal!important;pointer-events:none!important;}
+.leaflet-tooltip.tip-hopital{background:rgba(20,44,66,0.98)!important;border:2px solid rgba(63,168,190,0.45)!important;border-radius:10px!important;color:#DFF0F5!important;font-family:'DM Sans',sans-serif!important;font-size:0.85rem!important;padding:0.75rem 1.1rem!important;box-shadow:0 8px 28px rgba(0,0,0,0.28)!important;min-width:240px!important;max-width:300px!important;white-space:normal!important;pointer-events:none!important;}
+.leaflet-tooltip.tip-commune::before,.leaflet-tooltip.tip-hopital::before{display:none!important;}
+.tip-name-c{font-family:'Sora',sans-serif;font-size:1rem;font-weight:600;color:var(--accent);margin-bottom:0.4rem;}
+.tip-name-h{font-family:'Sora',sans-serif;font-size:1rem;font-weight:600;color:#7ECFDF;margin-bottom:0.4rem;}
+.tip-row-c{display:flex;gap:0.5rem;font-size:0.82rem;color:#111;line-height:1.75;flex-wrap:wrap;}
+.tip-row-h{display:flex;gap:0.5rem;font-size:0.82rem;color:#A8C8D8;line-height:1.75;flex-wrap:wrap;}
+.tip-k-c{color:var(--accent);min-width:120px;flex-shrink:0;font-weight:600;}
+.tip-k-h{color:#7ECFDF;min-width:90px;flex-shrink:0;font-weight:600;}
+.leaflet-container{background:#E8EFF6!important;}.leaflet-control-zoom a{background:white!important;color:var(--text)!important;border-color:var(--border)!important;}.leaflet-control-zoom a:hover{color:var(--accent)!important;}.leaflet-tooltip{pointer-events:none!important;}
+/* CHART */
+.chart-frame{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:2rem 1.5rem 1.5rem;box-shadow:0 4px 20px var(--shadow);position:relative;}
+.chart-inner{display:flex;gap:1.5rem;align-items:flex-start;}
+#scatter{flex:1 1 0;min-width:0;display:block;height:520px;}
+#scatter-leg{width:235px;flex-shrink:0;padding-left:1.2rem;border-left:1px solid var(--border);display:flex;flex-direction:column;padding-top:2rem;}
+.sleg-title{font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:0.19em;text-transform:uppercase;color:var(--accent);margin-bottom:0.75rem;}
+.sleg-group-lbl{font-family:'Sora',sans-serif;font-size:0.8rem;font-weight:700;margin-top:0.8rem;margin-bottom:0.3rem;padding-bottom:0.25rem;border-bottom:1.5px solid var(--border);}
+.sleg-item{display:flex;align-items:flex-start;gap:0.5rem;cursor:pointer;transition:opacity 0.2s,background 0.15s;padding:0.25rem 0.4rem;border-radius:5px;user-select:none;}
+.sleg-item:hover{background:var(--accent-lt);}
+.sleg-item.off{opacity:0.28;}
+.sleg-dot{width:11px;height:11px;border-radius:50%;flex-shrink:0;margin-top:3px;}
+.sleg-lbl{font-size:0.82rem;line-height:1.45;}
+#d3tip{position:absolute;pointer-events:none;background:rgba(255,255,255,0.99);border:1.5px solid var(--border);border-radius:9px;padding:0.8rem 1.1rem;font-size:0.88rem;line-height:1.82;max-width:270px;box-shadow:0 6px 22px var(--shadow);display:none;z-index:100;}
+.ax-lbl{font-family:'DM Sans',sans-serif;font-size:0.85rem;fill:#111;font-weight:500;}
+.tick text{fill:#111!important;font-size:0.85rem!important;}
+/* Insight band */
+.insight-band{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border-radius:10px;overflow:hidden;margin-top:1.5rem;border:1px solid var(--border);}
+.insight{background:white;padding:1.6rem 1.8rem;}
+.ins-n{font-family:'Sora',sans-serif;font-size:2.1rem;font-weight:700;margin-bottom:0.4rem;}
+.ins-l{font-size:0.95rem;line-height:1.55;color:#444;}
+.pager{display:flex;justify-content:space-between;align-items:center;padding:2rem 6rem;background:var(--bg-alt);border-top:1px solid var(--border);}
+.pager a{display:inline-flex;align-items:center;gap:0.5rem;text-decoration:none;font-family:'Sora',sans-serif;font-size:0.9rem;font-weight:600;color:var(--text);padding:0.6rem 1.3rem;border:1.5px solid var(--border);border-radius:7px;transition:all 0.2s;}
+.pager a:hover,.pager a.cta{background:var(--accent);color:white;border-color:var(--accent);}
+footer{padding:1.4rem 6rem;border-top:1px solid var(--border);background:white;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;}
+.footer-brand{font-family:'Sora',sans-serif;color:var(--accent);font-weight:700;}
+.footer-center{font-family:'Sora',sans-serif;font-size:0.82rem;color:#bbb;font-weight:300;letter-spacing:0.04em;}
+.footer-right{font-family:'Nunito',sans-serif;font-size:0.82rem;color:#2A7F8F;font-weight:300;letter-spacing:0.03em;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:none;}}
+.fi{opacity:0;transform:translateY(22px);transition:opacity 0.7s,transform 0.7s;}
+.fi.vis{opacity:1;transform:none;}
+@media(max-width:900px){.section,.page-hero,.pager{padding-left:2rem;padding-right:2rem;}.chart-inner{flex-direction:column;}#scatter-leg{width:100%;padding-left:0;border-left:none;border-top:1px solid var(--border);padding-top:1rem;}.insight-band{grid-template-columns:1fr;}footer{padding:1.4rem 2rem;}}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-brand">Grand Est · Santé · Soins aigus</div>
+  <ul class="nav-links">
+    <li><a href="index.html">Accueil</a></li>
+    <li><a href="carte_graphique.html" class="active">Carte &amp; Graphique</a></li>
+    <li><a href="infographie.html">Infographie</a></li>
+  </ul>
+</nav>
+
+<div class="page-hero">
+  <p class="ph-eyebrow">Carte &amp; Graphique</p>
+  <h1 class="ph-title">Distribution et accessibilité <br>des hôpitaux de soins aigus <br>en Grand Est</h1>
+</div>
+
+<section class="section" id="geovis">
+  <div class="sec-hd fi">
+    <span class="sec-tag">Géovisualisation</span>
+    <h2 class="sec-title">Où sont les hôpitaux — et à quelle distance ?</h2>
+  </div>
+  <div class="sec-desc fi">
+    <p>Cette carte représente simultanément la <strong>localisation des hôpitaux de soins aigus</strong> (points colorés selon leur type) et la <strong>distance de chaque commune au plus proche de ces établissements</strong>, mesurée depuis le centroïde communal. Plus la teinte de la commune est foncée, plus elle est éloignée d'un hôpital.</p>
+    <br>
+    <p><strong>Comment lire cette carte ?</strong> Survolez une commune pour afficher sa population, son type d'espace, le nom de l'hôpital le plus proche et la présence ou non d'un hôpital sur place. Survolez un point pour identifier l'hôpital, son adresse et son type. Utilisez le bouton <kbd>☰</kbd> en bas à gauche pour filtrer les types d'hôpitaux affichés ou masquer l'ensemble des points. Cliquez sur une classe dans la légende pour isoler les communes correspondantes.</p>
+  </div>
+  <div class="map-frame fi">
+    <div id="map"></div>
+    <button id="btn-reset">⟳ Retour à l'accueil</button>
+    <button id="btn-types" title="Filtrer par type d'hôpital">☰</button>
+    <div id="panel-types">
+      <div class="panel-hd">Hôpitaux — Affichage</div>
+      <button id="btn-all-hop"><span id="btn-all-icon">◎</span><span id="btn-all-text">Masquer tous les hôpitaux</span></button>
+      <div class="panel-hd" style="margin-top:0.3rem">Filtrer par type</div>
+      <div id="types-list"></div>
+    </div>
+  </div>
+  <p class="source-line fi">Sources : Données statistiques : INSEE (2022), FINESS (2025) / Fond de carte : IGN</p>
+</section>
+
+<div class="divider"></div>
+
+<section class="section alt" id="datavis">
+  <div class="sec-hd fi">
+    <span class="sec-tag">Datavisualisation</span>
+    <h2 class="sec-title">Population, distance et type d'espace</h2>
+  </div>
+  <p class="sec-desc fi">Ce nuage de points met en relation la <strong>population de chaque commune</strong> (axe horizontal) et sa <strong>distance à l'hôpital de soins aigus le plus proche</strong> (axe vertical, en km), sur des échelles logarithmiques. La couleur distingue le type d'espace (urbain / rural). Cliquez sur un type dans la légende pour l'isoler ou le masquer.</p>
+  <div class="chart-frame fi">
+    <div id="d3tip"></div>
+    <div class="chart-inner">
+      <svg id="scatter"></svg>
+      <div id="scatter-leg"><div class="sleg-title">Type d'espace</div></div>
+    </div>
+  </div>
+  <div class="insight-band fi">
+    <div class="insight"><div class="ins-n" style="color:var(--accent)">×5,8</div><div class="ins-l">Écart de distance entre urbain dense et rural très peu dense</div></div>
+    <div class="insight"><div class="ins-n" style="color:#388E3C">14 km</div><div class="ins-l">Distance moyenne dans les communes rurales très peu denses</div></div>
+    <div class="insight"><div class="ins-n" style="color:#08306B">2,41 km</div><div class="ins-l">Distance moyenne dans les communes urbaines denses</div></div>
+  </div>
+  <p class="source-line fi">Sources : INSEE (2022), FINESS (2025)</p>
+</section>
+
+<div class="pager">
+  <a href="index.html">← Accueil</a>
+  <a href="infographie.html" class="cta">Infographie →</a>
+</div>
+
+<footer>
+  <span class="footer-brand">Grand Est · Santé · Soins aigus</span>
+  <span class="footer-center">L'égalité face à la santé</span>
+  <span class="footer-right">Projet by SIM</span>
+</footer>
+
+<script>
+const FICHIERS={departements:'DEPARTEMENT_GRANDEST_4326.geojson',hopitaux:'hopitaux_grand_est_4326.geojson',distances:'distance_commune_hopitaux_Grandest_4326.geojson'};
+const VUE_INIT={lat:48.5,lng:6.5,zoom:7};
+const TYPES_HOP=[{label:'Centre Hospitalier (C.H.)',couleur:'#2A7F8F'},{label:'Centre Hospitalier Régional (C.H.R.)',couleur:'#1A5070'},{label:'Etablissement de Soins Chirurgicaux',couleur:'#3FA8BE'},{label:'Etablissement de Soins Médicaux',couleur:'#3A9E8C'},{label:'Etablissement de Soins Pluridisciplinaire',couleur:'#55B8A6'},{label:'Centre hospitalier, ex Hôpital local',couleur:'#7ECFBD'}];
+const COUL_HOP={};TYPES_HOP.forEach(t=>{COUL_HOP[t.label]=t.couleur;});
+const CHORO=['#FDEAEA','#F5ADAC','#E07070','#C03838','#8B1A15'];
+const typeActif={};TYPES_HOP.forEach(t=>{typeActif[t.label]=true;});
+const classeActive=[true,true,true,true,true];
+let hopitauxVisibles=true,mapObj=null,layerHopitaux=null,layerCommunes=null,bornes=[];
+function expandTypvoie(c){if(!c||['null','NULL',''].includes(String(c).trim()))return'';const d={'R':'Rue','AV':'Avenue','BD':'Boulevard','PL':'Place','RTE':'Route','CHE':'Chemin','ALL':'Allée','IMP':'Impasse','SQ':'Square','LD':'Lieu-dit','DOM':'Domaine','QUAI':'Quai','GR':'Grande Rue','LOT':'Lotissement','HLM':'HLM','CIT':'Cité','HAM':'Hameau','VLA':'Villa','CRS':'Cours'};return d[String(c).trim().toUpperCase().replace(/\.$/,'')]||c;}
+function jenks(data,k){const vals=data.filter(v=>v!=null&&isFinite(v)).sort((a,b)=>a-b);const n=vals.length;if(!n)return[];if(k>=n)return[vals[n-1]];const m1=Array.from({length:n+1},()=>new Array(k+1).fill(1));const m2=Array.from({length:n+1},()=>new Array(k+1).fill(0));for(let i=1;i<=k;i++)m2[1][i]=0;for(let j=2;j<=n;j++)for(let i=1;i<=k;i++)m2[j][i]=Infinity;for(let l=2;l<=n;l++){let s1=0,s2=0,w=0,v=0;for(let m=1;m<=l;m++){const i3=l-m+1-1,val=vals[i3];w++;s1+=val;s2+=val*val;v=s2-(s1*s1)/w;if(i3!==0)for(let j=2;j<=k;j++){const cand=v+m2[i3][j-1];if(m2[l][j]>=cand){m1[l][j]=l-m+1;m2[l][j]=cand;}}}m1[l][1]=1;m2[l][1]=v;}const br=new Array(k).fill(0);br[k-1]=vals[n-1];let cnt=n;for(let j=k;j>=2;j--){const idx=m1[cnt][j]-2;br[j-2]=vals[Math.max(0,idx)];cnt=m1[cnt][j]-1;}return br;}
+function cc(v){if(v==null||isNaN(v)||!isFinite(v))return'#FFFFFF';for(let i=0;i<bornes.length;i++)if(v<=bornes[i])return CHORO[i];return CHORO[CHORO.length-1];}
+function ic(v){if(v==null||isNaN(v)||!isFinite(v))return-1;for(let i=0;i<bornes.length;i++)if(v<=bornes[i])return i;return bornes.length-1;}
+function fd(m){if(m==null||isNaN(m))return'—';if(m<1000)return Math.round(m)+' m';return(m/1000).toFixed(1)+' km';}
+function fn(n){if(n==null||isNaN(n))return'—';return Math.round(n).toLocaleString('fr-FR');}
+function fh(v){const s=String(v).toLowerCase().trim();if(['1','oui','true'].includes(s))return'✓ Oui';if(['0','non','false'].includes(s))return'✗ Non';return v!=null?String(v):'—';}
+function fmtKm(m){if(m==null||isNaN(m)||!isFinite(m))return'—';return(m/1000).toFixed(2)+' km';}
+async function initCarte(){
+  mapObj=L.map('map',{center:[VUE_INIT.lat,VUE_INIT.lng],zoom:VUE_INIT.zoom});
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png',{attribution:'© OpenStreetMap · © CARTO',subdomains:'abcd',maxZoom:19}).addTo(mapObj);
+  const[gD,gH,gDist]=await Promise.all([fetch(FICHIERS.departements).then(r=>r.json()),fetch(FICHIERS.hopitaux).then(r=>r.json()),fetch(FICHIERS.distances).then(r=>r.json())]);
+  const ad=gDist.features.map(f=>f.properties.HubDist).filter(v=>v!=null&&isFinite(v)&&!isNaN(v));bornes=jenks(ad,5);
+  layerCommunes=L.geoJSON(gDist,{style:f=>{const v=f.properties.HubDist,cl=ic(v);let op=0.82;if(cl===-1)op=0.75;else if(!classeActive[cl])op=0;return{fillColor:cc(v),fillOpacity:op,color:'rgba(0,0,0,0.07)',weight:0.3};},onEachFeature:(f,l)=>{const p=f.properties;l.bindTooltip(`<div class="tip-name-c">${p.nom_offici||'—'}</div><div class="tip-row-c"><span class="tip-k-c">Département</span>${p.nom_offici_2||'—'}</div><div class="tip-row-c"><span class="tip-k-c">Type d'espace</span>${p.typo_urb_r||'—'}</div><div class="tip-row-c"><span class="tip-k-c">Population</span>${fn(p.PTOT)} hab.</div><div class="tip-row-c"><span class="tip-k-c">Hôpital in situ</span>${fh(p.hopital)}</div><div class="tip-row-c"><span class="tip-k-c">Hôpital le + proche</span>${p.HubName||'—'}</div>`,{className:'tip-commune',sticky:true,opacity:1,direction:'top'});}}).addTo(mapObj);
+  L.geoJSON(gD,{style:{color:'#8A9AAA',weight:1.6,fillOpacity:0,dashArray:'6 3'},interactive:false}).addTo(mapObj);
+  layerHopitaux=L.layerGroup();
+  gH.features.forEach(f=>{const p=f.properties,t=p.liblongcat||'',co=COUL_HOP[t]||'#AAAAAA',tv=expandTypvoie(p.typvoie),adr=[p.numvoie,tv,p.voie].filter(v=>v!=null&&v!==''&&String(v).toLowerCase()!=='null').join(' ')||'—';const[lng,lat]=f.geometry.coordinates;const mk=L.circleMarker([lat,lng],{radius:3.5,color:'rgba(20,60,80,0.5)',weight:0.8,fillColor:co,fillOpacity:0.6});mk.bindTooltip(`<div class="tip-name-h">${p.rs||'—'}</div><div class="tip-row-h"><span class="tip-k-h">Adresse</span>${adr}</div><div class="tip-row-h"><span class="tip-k-h">Commune</span>${p.nom_offici||'—'}</div><div class="tip-row-h"><span class="tip-k-h">Type</span>${t||'—'}</div>`,{className:'tip-hopital',sticky:true,opacity:1,direction:'top'});mk._hType=t;mk.addTo(layerHopitaux);});
+  layerHopitaux.addTo(mapObj);
+  const le=document.getElementById('types-list');
+  TYPES_HOP.forEach(({label,couleur})=>{const r=document.createElement('label');r.className='type-row';r.innerHTML=`<input type="checkbox" checked><span class="type-dot" style="background:${couleur}"></span><span class="type-lbl">${label}</span>`;r.querySelector('input').addEventListener('change',ev=>{typeActif[label]=ev.target.checked;if(hopitauxVisibles)rH();});le.appendChild(r);});
+  document.getElementById('btn-types').addEventListener('click',()=>{document.getElementById('panel-types').classList.toggle('open');});
+  const bA=document.getElementById('btn-all-hop'),bT=document.getElementById('btn-all-text'),bI=document.getElementById('btn-all-icon');
+  bA.addEventListener('click',()=>{hopitauxVisibles=!hopitauxVisibles;if(hopitauxVisibles){bT.textContent='Masquer tous les hôpitaux';bI.textContent='◎';bA.classList.remove('hidden-state');rH();}else{bT.textContent='Afficher tous les hôpitaux';bI.textContent='○';bA.classList.add('hidden-state');layerHopitaux.eachLayer(mk=>mk.setStyle({fillOpacity:0,opacity:0}));}});
+  document.getElementById('btn-reset').addEventListener('click',()=>{mapObj.setView([VUE_INIT.lat,VUE_INIT.lng],VUE_INIT.zoom);});
+  const LC=L.Control.extend({options:{position:'bottomright'},onAdd(){const div=L.DomUtil.create('div','map-legend');L.DomEvent.disableClickPropagation(div);let open=true;const render=()=>{const labs=bornes.map((mx,i)=>{const mn=i===0?0:bornes[i-1];return`${fd(mn)} – ${fd(mx)}`;});div.innerHTML=`<div class="leg-head" id="lhd"><span class="leg-title">Distance à l'hôpital</span><span style="font-size:0.75rem">${open?'▾':'▸'}</span></div>${open?`${CHORO.map((c,i)=>`<div class="leg-item ${classeActive[i]?'':'off'}" data-cl="${i}"><div class="leg-swatch" style="background:${c}"></div><span class="leg-lbl">${labs[i]||'—'}</span></div>`).join('')}`:''}`;div.querySelector('#lhd').addEventListener('click',()=>{open=!open;render();});if(open)div.querySelectorAll('.leg-item[data-cl]').forEach(el=>{el.addEventListener('click',()=>{const i=parseInt(el.dataset.cl);classeActive[i]=!classeActive[i];el.classList.toggle('off');rC();});});};render();return div;}});
+  new LC().addTo(mapObj);
+}
+function rH(){if(!hopitauxVisibles)return;layerHopitaux.eachLayer(mk=>{const v=typeActif[mk._hType]!==false;mk.setStyle({fillOpacity:v?0.6:0,opacity:v?1:0});});}
+function rC(){layerCommunes.eachLayer(l=>{const v=l.feature.properties.HubDist,cl=ic(v);let op=0;if(cl===-1)op=0.75;else if(classeActive[cl])op=0.82;l.setStyle({fillOpacity:op});});}
+
+async function initScatter(){
+  const raw=await fetch(FICHIERS.distances).then(r=>r.json());
+  const pts=raw.features.map(f=>f.properties).filter(p=>p.PTOT>0&&p.HubDist>0&&isFinite(p.HubDist));
+  const typesUrb=[...new Set(pts.map(p=>p.typo_urb_r).filter(Boolean))].sort();
+  const PAL_U=['#08306B','#1565C0','#2196F3','#64B5F6','#B3E5FC'];
+  function bP(types){const c={},u=types.filter(t=>t.toLowerCase().includes('urbain')),r=types.filter(t=>t.toLowerCase().includes('rural')),a=types.filter(t=>!t.toLowerCase().includes('urbain')&&!t.toLowerCase().includes('rural'));u.forEach((t,i)=>{c[t]=PAL_U[Math.min(i,PAL_U.length-1)];});r.forEach(t=>{const tl=t.toLowerCase();if(tl.includes('forte'))c[t]='#1B5E20';else if(tl.includes('faible'))c[t]='#388E3C';else if(tl.includes('très peu'))c[t]='#A5D6A7';else if(tl.includes('peu dense'))c[t]='#66BB6A';else c[t]='#81C784';});const PA=['#6A1B9A','#AB47BC','#CE93D8','#FF6F00','#FFB300'];a.forEach((t,i)=>{c[t]=PA[Math.min(i,PA.length-1)];});return c;}
+  const cU=bP(typesUrb),uA={};typesUrb.forEach(t=>{uA[t]=true;});
+
+  const svgEl=document.getElementById('scatter'),mg={top:20,right:20,bottom:78,left:92},lW=235+24+16,tW=svgEl.parentElement.clientWidth,sW=Math.max(300,tW-lW),sH=520,W=sW-mg.left-mg.right,H=sH-mg.top-mg.bottom;
+  svgEl.setAttribute('width',sW);svgEl.setAttribute('height',sH);
+  const svg=d3.select('#scatter'),g=svg.append('g').attr('transform',`translate(${mg.left},${mg.top})`);
+  const xS=d3.scaleLog().domain([d3.min(pts,p=>p.PTOT)*0.7,d3.max(pts,p=>p.PTOT)*1.5]).range([0,W]).nice();
+  const yS=d3.scaleLog().domain([d3.min(pts,p=>p.HubDist/1000)*0.7,d3.max(pts,p=>p.HubDist/1000)*1.5]).range([H,0]).nice();
+  g.append('g').attr('transform',`translate(0,${H})`).call(d3.axisBottom(xS).tickSize(-H).tickFormat('')).call(a=>{a.select('.domain').remove();a.selectAll('line').style('stroke','rgba(0,0,0,0.05)').style('stroke-dasharray','3 3');});
+  g.append('g').call(d3.axisLeft(yS).tickSize(-W).tickFormat('')).call(a=>{a.select('.domain').remove();a.selectAll('line').style('stroke','rgba(0,0,0,0.05)').style('stroke-dasharray','3 3');});
+  g.append('g').attr('transform',`translate(0,${H})`).call(d3.axisBottom(xS).ticks(5,'~s').tickFormat(d=>{if(d>=1e6)return(d/1e6).toFixed(0)+' M';if(d>=1e3)return(d/1e3).toFixed(0)+' k';return d;})).call(ax=>{ax.select('.domain').style('stroke','rgba(0,0,0,0.16)');ax.selectAll('text').style('fill','#111').style('font-size','0.85rem');ax.selectAll('line').style('stroke','rgba(0,0,0,0.1)');});
+  g.append('text').attr('class','ax-lbl').attr('x',W/2).attr('y',H+65).attr('text-anchor','middle').text('Population');
+  const yMn=d3.min(pts,p=>p.HubDist/1000),yMx=d3.max(pts,p=>p.HubDist/1000);
+  const yT=[0.1,0.2,0.5,1,2,5,10,20,50,100,200,500].filter(v=>v>=yMn*0.8&&v<=yMx*1.3);
+  const yAG=g.append('g').call(d3.axisLeft(yS).tickValues(yT).tickFormat(d=>d<1?d.toFixed(1)+' km':d.toFixed(0)+' km'));
+  yAG.select('.domain').style('stroke','rgba(0,0,0,0.16)');yAG.selectAll('text').style('fill','#111').style('font-size','0.85rem');yAG.selectAll('line').style('stroke','rgba(0,0,0,0.1)');
+  let pY=-Infinity;yAG.selectAll('.tick').each(function(){const m=d3.select(this).attr('transform').match(/translate\(0,([^)]+)\)/);if(!m)return;const cy=+m[1];if(Math.abs(cy-pY)<18&&pY!==-Infinity)d3.select(this).select('text').style('visibility','hidden');else pY=cy;});
+  g.append('text').attr('class','ax-lbl').attr('transform','rotate(-90)').attr('x',-H/2).attr('y',-78).attr('text-anchor','middle').text('Distance à l\'hôpital le + proche (km)');
+  const tip=document.getElementById('d3tip'),fr=document.querySelector('.chart-frame');
+
+  const DOT_R=3.8,DOT_R_HOV=7;
+  const cs=g.selectAll('circle').data(pts).enter().append('circle')
+    .attr('cx',p=>xS(p.PTOT))
+    .attr('cy',p=>yS(p.HubDist/1000))
+    .attr('r',DOT_R)
+    .attr('fill',p=>cU[p.typo_urb_r]||'#AAAAAA')
+    .attr('fill-opacity',0.65)
+    .attr('stroke','rgba(255,255,255,0.7)')
+    .attr('stroke-width',0.6)
+    .style('cursor','crosshair');
+
+  cs.on('mouseover',function(ev,p){
+    d3.select(this).attr('r',DOT_R_HOV).attr('fill-opacity',1);
+    tip.style.display='block';
+    tip.innerHTML=`<div style="font-family:'Sora',sans-serif;font-size:1rem;font-weight:600;color:#BF3B30;margin-bottom:6px">${p.nom_offici||'—'}</div><div style="font-size:0.88rem;line-height:1.85;color:#111"><div><span style="color:#BF3B30;min-width:115px;display:inline-block;font-weight:600">Département</span>${p.nom_offici_2||'—'}</div><div><span style="color:#BF3B30;min-width:115px;display:inline-block;font-weight:600">Type d'espace</span>${p.typo_urb_r||'—'}</div><div><span style="color:#BF3B30;min-width:115px;display:inline-block;font-weight:600">Population</span>${fn(p.PTOT)} hab.</div><div><span style="color:#BF3B30;min-width:115px;display:inline-block;font-weight:600">Hôpital in situ</span>${fh(p.hopital)}</div><div><span style="color:#BF3B30;min-width:115px;display:inline-block;font-weight:600">Distance</span>${fmtKm(p.HubDist)}</div></div>`;
+  }).on('mousemove',function(ev){const r=fr.getBoundingClientRect();tip.style.left=(ev.clientX-r.left+14)+'px';tip.style.top=(ev.clientY-r.top-18)+'px';})
+  .on('mouseout',function(){
+    d3.select(this).attr('r',DOT_R).attr('fill-opacity',0.65);
+    tip.style.display='none';
+  });
+
+  const lD=document.getElementById('scatter-leg');
+  const gs=[{g:'Urbain',t:typesUrb.filter(t=>t.toLowerCase().includes('urbain'))},{g:'Rural',t:typesUrb.filter(t=>t.toLowerCase().includes('rural'))},{g:'Autre',t:typesUrb.filter(t=>!t.toLowerCase().includes('urbain')&&!t.toLowerCase().includes('rural'))}].filter(x=>x.t.length>0);
+  gs.forEach(({g,t})=>{const gl=document.createElement('div');gl.className='sleg-group-lbl';gl.textContent=g;lD.appendChild(gl);t.forEach(type=>{const it=document.createElement('div');it.className='sleg-item';it.innerHTML=`<div class="sleg-dot" style="background:${cU[type]||'#aaa'}"></div><span class="sleg-lbl">${type.charAt(0).toUpperCase()+type.slice(1)}</span>`;it.addEventListener('click',()=>{uA[type]=!uA[type];it.classList.toggle('off');cs.filter(p=>p.typo_urb_r===type).attr('opacity',uA[type]?1:0).attr('pointer-events',uA[type]?'all':'none');});lD.appendChild(it);});});
+}
+const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('vis');obs.unobserve(e.target);}}),{threshold:0.08});
+document.querySelectorAll('.fi').forEach(el=>obs.observe(el));
+document.addEventListener('DOMContentLoaded',async()=>{
+  try{await Promise.all([initCarte(),initScatter()]);}
+  catch(e){console.error(e);['map','scatter'].forEach(id=>{const el=document.getElementById(id);if(el)el.insertAdjacentHTML('afterend','<div style="padding:2rem;color:#BF3B30;text-align:center;background:#F9ECE9;border-radius:8px;margin-top:1rem">⚠ Fichier GeoJSON introuvable.</div>');});}
+});
+</script>
+</body>
+</html>

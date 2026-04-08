@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Infographie · Grand Est · Soins aigus</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Mono:wght@300;400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F6F4F1;--bg-alt:#FFFFFF;--border:#DEDBD5;--shadow:rgba(40,30,20,0.09);--text:#111;--muted:#555;--accent:#BF3B30;--accent-lt:#F9ECE9;--accent-mid:#E07070;--accent-dk:#8B1A15;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:400;line-height:1.7;overflow-x:hidden;}
+nav{position:fixed;top:0;left:0;right:0;z-index:2000;display:flex;align-items:center;justify-content:space-between;padding:0 3rem;height:58px;background:rgba(246,244,241,0.96);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);box-shadow:0 2px 12px var(--shadow);}
+.nav-brand{font-family:'Sora',sans-serif;font-size:0.9rem;font-weight:700;color:var(--accent);}
+.nav-links{display:flex;gap:0;list-style:none;}
+.nav-links li a{display:block;padding:0 1.1rem;line-height:57px;font-size:0.72rem;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;color:var(--text);text-decoration:none;border-left:1px solid var(--border);transition:background 0.18s,color 0.18s;}
+.nav-links li:first-child a{border-left:none;}
+.nav-links li a:hover,.nav-links li a.active{background:var(--accent);color:white;}
+.page-hero{padding:7rem 6rem 3.5rem;background:var(--bg);border-bottom:1px solid var(--border);position:relative;overflow:hidden;}
+.page-hero::after{content:'';position:absolute;right:3rem;bottom:-2rem;font-family:'Sora',sans-serif;font-size:14rem;font-weight:800;color:rgba(191,59,48,0.05);line-height:1;pointer-events:none;}
+.ph-eyebrow{font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:0.24em;text-transform:uppercase;color:var(--accent);margin-bottom:0.7rem;}
+.ph-title{font-family:'Sora',sans-serif;font-size:clamp(1.6rem,3.5vw,3rem);font-weight:700;line-height:1.15;margin-bottom:0.8rem;}
+.ph-desc{max-width:72ch;font-size:1.02rem;line-height:1.88;color:#333;}
+.section{padding:4rem 6rem;}
+.section.alt{background:var(--bg-alt);}
+.sec-label{font-family:'DM Mono',monospace;font-size:0.7rem;letter-spacing:0.24em;text-transform:uppercase;color:var(--accent);margin-bottom:0.5rem;}
+.sec-title{font-family:'Sora',sans-serif;font-size:1.45rem;font-weight:700;margin-bottom:1.2rem;}
+.section-source{font-family:'DM Mono',monospace;font-size:0.68rem;color:#999;margin-top:1.5rem;line-height:1.6;}
+.divider{height:1px;background:var(--border);}
+
+/* KPI */
+.kpi-row{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;}
+.kpi-card{background:white;border:1px solid var(--border);border-top:4px solid var(--accent);border-radius:0 0 12px 12px;padding:1.7rem 1.8rem;box-shadow:0 2px 12px var(--shadow);transition:transform 0.2s;}
+.kpi-card:hover{transform:translateY(-3px);}
+.kpi-card.k2{border-top-color:var(--accent-mid);}
+.kpi-card.k3{border-top-color:var(--accent-dk);}
+.kpi-main{display:flex;align-items:baseline;gap:0.3rem;margin-bottom:0.5rem;}
+.kpi-n{font-family:'Sora',sans-serif;font-size:3rem;font-weight:800;color:var(--accent);line-height:1;}
+.k2 .kpi-n{color:var(--accent-mid);}
+.k3 .kpi-n{color:var(--accent-dk);}
+.kpi-unit{font-family:'Sora',sans-serif;font-size:1.1rem;font-weight:600;color:var(--accent);}
+.k2 .kpi-unit{color:var(--accent-mid);}
+.k3 .kpi-unit{color:var(--accent-dk);}
+.kpi-label{font-size:1rem;font-weight:500;line-height:1.5;margin-bottom:0.3rem;}
+.kpi-sub{font-size:0.9rem;color:var(--muted);}
+
+/* Info blocks */
+.info-block{background:white;border:1px solid var(--border);border-radius:12px;overflow:hidden;box-shadow:0 2px 16px var(--shadow);}
+.info-block-hd{padding:1.6rem 2rem 1.3rem;border-bottom:1px solid var(--border);background:#FAFAFA;}
+.info-tag{font-family:'DM Mono',monospace;font-size:0.72rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--accent);}
+.info-block-title{font-family:'Sora',sans-serif;font-size:1.28rem;font-weight:700;line-height:1.35;margin:0.4rem 0 0.55rem;}
+.info-block-desc{font-size:1.02rem;line-height:1.88;color:#222;max-width:82ch;}
+.info-block-body{padding:1.9rem 2rem;}
+
+/* Map + side summary */
+.dept-map-row{display:grid;grid-template-columns:1fr 1fr;gap:2.5rem;align-items:start;margin-bottom:2.2rem;}
+.dept-img-wrap{display:flex;flex-direction:column;gap:0.7rem;}
+.mapimg-caption{font-family:'DM Mono',monospace;font-size:0.78rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--accent);font-weight:500;}
+.mapimg-sub{font-size:0.75rem;color:#888;font-style:italic;margin-top:2px;}
+.mapimg-img{width:100%;height:auto;display:block;border-radius:8px;margin-top:0.5rem;}
+.mm-legend{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:8px;}
+.mm-leg-item{display:flex;align-items:center;gap:5px;}
+.mm-leg-dot{width:14px;height:14px;border-radius:3px;flex-shrink:0;}
+.mm-leg-lbl{font-size:0.82rem;color:#444;}
+/* Side summary */
+.dept-side-summary{background:var(--accent-lt);border:1px solid rgba(191,59,48,0.18);border-radius:12px;padding:1.9rem 1.7rem;display:flex;flex-direction:column;gap:1.2rem;}
+.dsm-title{font-family:'Sora',sans-serif;font-size:1.05rem;font-weight:700;color:var(--accent);}
+.dsm-item{border-left:3px solid var(--accent);padding-left:0.9rem;}
+.dsm-dep{font-family:'Sora',sans-serif;font-size:0.95rem;font-weight:700;margin-bottom:0.1rem;}
+.dsm-val{font-size:0.92rem;color:var(--muted);line-height:1.5;}
+.dsm-sep{height:1px;background:rgba(191,59,48,0.15);}
+.dsm-note{font-size:0.95rem;color:#444;line-height:1.72;}
+
+/* Bar charts */
+.dept-charts-wrap{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;}
+.dept-chart-title{font-family:'DM Mono',monospace;font-size:0.77rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent);margin-bottom:0.9rem;}
+.d-bar-row{margin-bottom:0.7rem;}
+.d-bar-name{font-size:0.92rem;font-weight:600;margin-bottom:3px;}
+.d-bar-track{height:23px;background:#EEECEC;border-radius:4px;overflow:hidden;display:flex;align-items:center;}
+.d-bar-fill{height:100%;border-radius:4px;display:flex;align-items:center;padding:0 9px;min-width:2px;}
+.d-bar-val{font-size:0.8rem;font-weight:700;color:white;white-space:nowrap;}
+.d-bar-val-out{font-size:0.8rem;color:#222;margin-left:6px;white-space:nowrap;font-weight:600;}
+
+/* Type charts */
+/* Synchronized type space grid: header row + one row per type */
+.type-sync-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 2.5rem;}
+.type-sync-hd{font-family:'DM Mono',monospace;font-size:0.77rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent);padding-bottom:0.8rem;margin-bottom:0.2rem;border-bottom:1px solid var(--border);}
+.type-sync-row{display:contents;} /* lets children participate in parent grid */
+.type-sync-cell{padding:0.65rem 0;border-bottom:1px solid rgba(222,219,213,0.5);}
+.type-sync-row:last-child .type-sync-cell{border-bottom:none;}
+.t-bar-lbl{font-size:0.94rem;font-weight:600;margin-bottom:3px;line-height:1.35;}
+.t-bar-meta{font-size:0.82rem;color:var(--muted);margin-bottom:5px;}
+.t-bar-track{height:25px;background:#EEECEC;border-radius:5px;overflow:hidden;display:flex;align-items:center;}
+.t-bar-fill{height:100%;border-radius:5px;display:flex;align-items:center;padding:0 9px;min-width:3px;}
+.t-bar-pct{font-size:0.85rem;font-weight:700;color:white;white-space:nowrap;}
+.t-bar-pct-out{font-size:0.85rem;color:#222;margin-left:7px;white-space:nowrap;font-weight:600;}
+
+/* Conclusion — Nunito font for cleaner look without jarring contrast */
+.info-conclusion{background:var(--accent);border-radius:12px;padding:2.8rem 3.2rem;box-shadow:0 4px 20px rgba(191,59,48,0.25);position:relative;overflow:hidden;}
+.info-conclusion::before{content:'"';position:absolute;left:1.5rem;top:-1rem;font-family:'Sora',sans-serif;font-size:14rem;font-weight:800;color:rgba(255,255,255,0.08);line-height:1;pointer-events:none;}
+/* Normal text — Nunito light */
+.conc-normal{font-family:'Nunito',sans-serif;font-size:1.1rem;font-weight:400;line-height:1.88;color:rgba(255,255,255,0.85);margin-bottom:1.8rem;}
+/* Emphasized sentence — Nunito bold, visually distinct */
+.conc-emphasis{
+  font-family:'Nunito',sans-serif;
+  font-size:1.25rem;font-weight:700;
+  line-height:1.78;color:white;
+  background:rgba(255,255,255,0.12);
+  border-radius:8px;
+  padding:1.2rem 1.6rem;
+  border-left:4px solid rgba(255,255,255,0.7);
+  margin-top:0;
+}
+.info-src-line{font-family:'DM Mono',monospace;font-size:0.65rem;color:rgba(255,255,255,0.4);margin-top:1.8rem;}
+
+/* Policy cards */
+.policy-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;}
+.policy-card{background:white;border:1px solid var(--border);border-left:4px solid var(--accent);border-radius:2px 10px 10px 2px;padding:1.7rem;transition:background 0.2s;}
+.policy-card:hover{background:var(--accent-lt);}
+.policy-card.p2{border-left-color:var(--accent-mid);}
+.policy-card.p3{border-left-color:#C03838;}
+.policy-card.p4{border-left-color:#F5ADAC;}
+.pc-year{font-family:'DM Mono',monospace;font-size:0.64rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);margin-bottom:0.5rem;}
+.pc-name{font-family:'Sora',sans-serif;font-size:1.05rem;font-weight:700;margin-bottom:0.6rem;line-height:1.3;color:var(--accent);}
+.policy-card.p2 .pc-name,.policy-card.p3 .pc-name,.policy-card.p4 .pc-name{color:#C03838;}
+.pc-desc{font-size:0.97rem;line-height:1.78;color:#333;}
+.pc-desc strong{color:var(--text);}
+.pc-src{font-family:'DM Mono',monospace;font-size:0.63rem;color:var(--muted);margin-top:0.9rem;padding-top:0.7rem;border-top:1px solid var(--border);}
+
+.pager{display:flex;justify-content:space-between;align-items:center;padding:2rem 6rem;background:var(--bg-alt);border-top:1px solid var(--border);}
+.pager a{display:inline-flex;align-items:center;gap:0.5rem;text-decoration:none;font-family:'Sora',sans-serif;font-size:0.9rem;font-weight:600;color:var(--text);padding:0.6rem 1.3rem;border:1.5px solid var(--border);border-radius:7px;transition:all 0.2s;}
+.pager a:hover,.pager a.cta{background:var(--accent);color:white;border-color:var(--accent);}
+footer{padding:1.4rem 6rem;border-top:1px solid var(--border);background:white;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;}
+.footer-brand{font-family:'Sora',sans-serif;color:var(--accent);font-weight:700;}
+.footer-center{font-family:'Sora',sans-serif;font-size:0.82rem;color:#bbb;font-weight:300;letter-spacing:0.04em;}
+/* Right: only Projet by SIM — thin, clean */
+.footer-right{font-family:'Nunito',sans-serif;font-size:0.82rem;color:#2A7F8F;font-weight:300;letter-spacing:0.03em;}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:none;}}
+.fi{opacity:0;transform:translateY(22px);transition:opacity 0.7s ease,transform 0.7s ease;}
+.fi.vis{opacity:1;transform:none;}
+.fi:nth-child(2){transition-delay:0.1s;}.fi:nth-child(3){transition-delay:0.2s;}.fi:nth-child(4){transition-delay:0.3s;}
+@media(max-width:900px){.section,.page-hero,.pager{padding-left:2rem;padding-right:2rem;}.kpi-row,.dept-map-row,.dept-charts-wrap,.type-sync-grid,.policy-grid{grid-template-columns:1fr;}footer{padding:1.4rem 2rem;}}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-brand">Grand Est · Santé · Soins aigus</div>
+  <ul class="nav-links">
+    <li><a href="index.html">Accueil</a></li>
+    <li><a href="carte_graphique.html">Carte &amp; Graphique</a></li>
+    <li><a href="infographie.html" class="active">Infographie</a></li>
+  </ul>
+</nav>
+
+<div class="page-hero">
+  <p class="ph-eyebrow">Infographie</p>
+  <h1 class="ph-title">Inégalités d'accès aux soins aigus et <br>politiques de rééquilibrage territorial</h1>
+  <p class="ph-desc">Résultats de l'analyse spatiale et panorama des politiques publiques mises en place pour améliorer l'accessibilité aux hôpitaux de soins aigus en Grand Est.</p>
+</div>
+
+<section class="section">
+  <div style="display:flex;flex-direction:column;gap:2rem;">
+
+    <!-- KPI -->
+    <div>
+      <p class="sec-label fi">Indicateurs clés</p>
+      <div class="kpi-row fi">
+        <div class="kpi-card">
+          <div class="kpi-main"><span class="kpi-n">119</span><span class="kpi-unit">&thinsp;/&thinsp;5 115</span></div>
+          <div class="kpi-label">communes accueillant un hôpital de soins aigus</div>
+          <div class="kpi-sub">soit seulement 2,3 % du territoire régional</div>
+        </div>
+        <div class="kpi-card k2">
+          <div class="kpi-main"><span class="kpi-n">×5,8</span></div>
+          <div class="kpi-label">l'écart de distance entre urbain dense et rural très peu dense</div>
+          <div class="kpi-sub">2,41 km (urbain dense) ↔ 14,08 km (rural très peu dense)</div>
+        </div>
+        <div class="kpi-card k3">
+          <div class="kpi-main"><span class="kpi-n">8,2</span><span class="kpi-unit">– 16 km</span></div>
+          <div class="kpi-label">fourchette des distances moyennes par département</div>
+          <div class="kpi-sub">Haut-Rhin (8,24 km) ↔ Meuse (15,98 km)</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- DÉPARTEMENT -->
+    <div class="info-block fi">
+      <div class="info-block-hd">
+        <div class="info-tag">Disparités départementales</div>
+        <h4 class="info-block-title">Plus de densité d'hôpitaux ne signifie pas toujours une meilleure accessibilité</h4>
+        <!-- Rewritten: no overlap with side box content, more general -->
+        <p class="info-block-desc">L'accessibilité aux soins aigus ne se réduit pas à un simple comptage d'établissements. Au-delà de la distance, d'autres facteurs structurels entrent en jeu : la superficie du département, la répartition géographique des hôpitaux au sein de ce territoire, ou encore la concentration des établissements autour des pôles urbains. Un département peut être bien doté en hôpitaux tout en laissant ses communes périphériques très éloignées de tout établissement, si ces derniers sont regroupés dans une seule ville.</p>
+      </div>
+      <div class="info-block-body">
+        <div class="dept-map-row">
+          <div class="dept-img-wrap">
+            <div class="mapimg-caption">Distance moyenne à l'hôpital le plus proche par département</div>
+            <div class="mapimg-sub">Plus la couleur est foncée, plus la distance est élevée</div>
+            <img src="carte_accessibilite_departement_grandest.png"
+                 alt="Carte des départements du Grand Est — distance moyenne à l'hôpital de soins aigus"
+                 class="mapimg-img">
+            <div class="mm-legend" id="minimap-legend"></div>
+          </div>
+          <div class="dept-side-summary">
+            <div class="dsm-title">Extrêmes à retenir</div>
+            <div class="dsm-item">
+              <div class="dsm-dep">Meuse — 15,98 km</div>
+              <div class="dsm-val">Bien doté en établissements mais distance la plus élevée.</div>
+            </div>
+            <div class="dsm-sep"></div>
+            <div class="dsm-item">
+              <div class="dsm-dep">Ardennes — 13,96 km</div>
+              <div class="dsm-val">Double peine : faible densité hospitalière et distances élevées.</div>
+            </div>
+            <div class="dsm-sep"></div>
+            <div class="dsm-item">
+              <div class="dsm-dep">Haut-Rhin — 8,24 km</div>
+              <div class="dsm-val">Département le plus accessible. Établissements bien dotés et bien répartis.</div>
+            </div>
+            <div class="dsm-sep"></div>
+            <p class="dsm-note">Un département bien doté en hôpitaux peut afficher des distances élevées si les établissements sont concentrés dans une seule zone urbaine.</p>
+          </div>
+        </div>
+        <div class="dept-charts-wrap">
+          <div>
+            <div class="dept-chart-title">Distance à l'hôpital (km) — du plus isolé au moins isolé</div>
+            <div id="dept-dist-chart"></div>
+          </div>
+          <div>
+            <div class="dept-chart-title">Hôpitaux / 100 000 hab. — du moins bien doté au mieux doté</div>
+            <div id="dept-dens-chart"></div>
+          </div>
+        </div>
+        <p class="section-source">Sources : INSEE (2022), FINESS (2025)</p>
+      </div>
+    </div>
+
+    <!-- TYPE D'ESPACE -->
+    <div class="info-block fi">
+      <div class="info-block-hd">
+        <div class="info-tag">Type d'espace</div>
+        <h4 class="info-block-title">Un fossé croissant entre espaces urbains et ruraux isolés</h4>
+        <p class="info-block-desc">Les <strong>communes rurales autonomes très peu denses</strong> ne disposent d'<strong>aucun hôpital</strong> sur leur territoire et se trouvent en moyenne à <strong>14 km</strong> du plus proche. À l'opposé, 88 % des communes urbaines denses accueillent au moins un établissement.</p>
+      </div>
+      <div class="info-block-body">
+        <div class="type-sync-grid" id="type-sync-grid">
+          <div class="type-sync-hd">Part des communes disposant d'un hôpital</div>
+          <div class="type-sync-hd">Distance moyenne à l'hôpital le plus proche (km)</div>
+          <!-- rows injected by JS -->
+        </div>
+        <p class="section-source">Sources : INSEE (2022), FINESS (2025)</p>
+      </div>
+    </div>
+
+    <!-- CONCLUSION — Nunito, normal + one emphasized sentence -->
+    <div class="info-conclusion fi">
+      <!-- Normal paragraphs -->
+      <p class="conc-normal">
+        Les communes rurales autonomes très peu denses se trouvent en moyenne à <strong>14 km</strong>
+        de l'hôpital de soins aigus le plus proche — soit <strong>5,8 fois</strong> plus loin qu'en
+        milieu urbain dense. En cas d'arrêt cardiaque, chaque minute sans défibrillation réduit les
+        chances de survie de 7 à 10 % : à 14 km, le SMUR peut mettre 20 minutes à arriver.
+        La distance n'est pas un chiffre neutre — c'est un facteur de survie.
+      </p>
+      <!-- Emphasized final sentence -->
+      <div class="conc-emphasis">
+        Face à ces inégalités structurelles, la localisation d'un hôpital n'est pas qu'une donnée
+        géographique : c'est un enjeu de santé publique qui engage l'équité territoriale du Grand Est.
+      </div>
+      <p class="info-src-line"></p>
+    </div>
+
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- POLITIQUES -->
+<section class="section alt fi">
+  <p class="sec-label">Politiques publiques</p>
+  <h2 class="sec-title">Réponses institutionnelles aux inégalités d'accès aux soins aigus</h2>
+  <p style="max-width:76ch;font-size:1.02rem;line-height:1.88;color:#333;margin-bottom:2.5rem;">Face aux disparités territoriales identifiées, plusieurs dispositifs ont été déployés aux niveaux national et régional pour améliorer l'accessibilité aux soins dans les zones sous-dotées du Grand Est.</p>
+  <div class="policy-grid">
+    <div class="policy-card">
+      <div class="pc-year">2018–2028</div>
+      <div class="pc-name">Projet Régional de Santé (PRS) Grand Est</div>
+      <p class="pc-desc">Identifie les <strong>Zones d'Intervention Prioritaire (ZIP)</strong> et les <strong>Zones d'Action Complémentaire (ZAC)</strong> à faible densité médicale, avec mesures incitatives pour l'installation dans les territoires ruraux sous-dotés.</p>
+      <div class="pc-src">Source : ARS Grand Est, Projet Régional de Santé 2018-2028</div>
+    </div>
+    <div class="policy-card p2">
+      <div class="pc-year">2019</div>
+      <div class="pc-name">Pacte de refondation des urgences &amp; Service d'Accès aux Soins (SAS)</div>
+      <p class="pc-desc">Crée le <strong>SAS (numéro 15)</strong> pour orienter les patients selon le degré d'urgence et désengorger les services hospitaliers saturés. Plusieurs SAS territoriaux déployés en Grand Est.</p>
+      <div class="pc-src">Source : Ministère de la Santé, Pacte de refondation des urgences, sept. 2019</div>
+    </div>
+    <div class="policy-card p3">
+      <div class="pc-year">2022</div>
+      <div class="pc-name">Médecin Correspondant du SAMU (MCS)</div>
+      <p class="pc-desc">Des <strong>médecins généralistes formés aux premiers secours</strong> interviennent dans les zones où le délai SMUR dépasse 30 minutes. Le Grand Est est région pilote en Meuse et Vosges.</p>
+      <div class="pc-src">Source : Ministère de la Santé, Décret n°2007-1018, réactivé 2022</div>
+    </div>
+    <div class="policy-card p4">
+      <div class="pc-year">2023</div>
+      <div class="pc-name">Loi Rist — Accès direct aux IPA et kinésithérapeutes</div>
+      <p class="pc-desc">Autorise un <strong>accès direct aux infirmiers en pratique avancée (IPA)</strong> sans ordonnance, compensant partiellement l'absence de médecins dans les zones rurales du Grand Est.</p>
+      <div class="pc-src">Source : Loi n°2023-379 du 19 mai 2023</div>
+    </div>
+    <div class="policy-card">
+      <div class="pc-year">Continu</div>
+      <div class="pc-name">Maisons de Santé Pluriprofessionnelles (MSP) &amp; CPTS</div>
+      <p class="pc-desc">L'ARS subventionne plus de <strong>120 MSP</strong> en Grand Est (2024) et les <strong>CPTS</strong>, concentrées dans les territoires ruraux sous-dotés pour améliorer le premier recours.</p>
+      <div class="pc-src">Source : ARS Grand Est, Bilan des MSP 2024</div>
+    </div>
+    <div class="policy-card p2">
+      <div class="pc-year">2020–2024</div>
+      <div class="pc-name">Ségur de la Santé</div>
+      <p class="pc-desc">19 milliards d'euros pour moderniser les hôpitaux publics. En Grand Est, travaux à Charleville-Mézières, Verdun et Saint-Dié. Des <strong>fermetures de services d'urgences</strong> ont touché certains petits hôpitaux ruraux.</p>
+      <div class="pc-src">Source : Ministère de la Santé, Accord du Ségur de la Santé, juillet 2020</div>
+    </div>
+  </div>
+</section>
+
+<div class="pager">
+  <a href="carte_graphique.html">← Carte &amp; Graphique</a>
+  <a href="index.html" class="cta">↑ Retour à l'accueil</a>
+</div>
+
+<footer>
+  <span class="footer-brand">Grand Est · Santé · Soins aigus</span>
+  <span class="footer-center">L'égalité face à la santé</span>
+  <span class="footer-right">Projet by SIM</span>
+</footer>
+
+<script>
+function initInfogaphie(){
+  const DEPTS=[
+    {nom:'Ardennes',dist:13.96,dens:2.46,col:'#C62828'},
+    {nom:'Moselle',dist:8.72,dens:2.72,col:'#6A1B9A'},
+    {nom:'Marne',dist:12.04,dens:3.32,col:'#2E7D32'},
+    {nom:'Meuse',dist:15.98,dens:4.37,col:'#1565C0'},
+    {nom:'Meurthe-et-Moselle',dist:10.35,dens:3.69,col:'#00695C'},
+    {nom:'Aube',dist:14.51,dens:3.70,col:'#E64A19'},
+    {nom:'Haute-Marne',dist:14.02,dens:4.94,col:'#F57F17'},
+    {nom:'Vosges',dist:9.06,dens:4.78,col:'#283593'},
+    {nom:'Bas-Rhin',dist:9.05,dens:2.56,col:'#AD1457'},
+    {nom:'Haut-Rhin',dist:8.24,dens:3.04,col:'#37474F'},
+  ];
+  document.getElementById('minimap-legend').innerHTML=[
+    {bg:'#FDEAEA',lbl:'< 9 km'},{bg:'#F5ADAC',lbl:'9–10 km'},
+    {bg:'#E07070',lbl:'10–12 km'},{bg:'#C03838',lbl:'12–14 km'},{bg:'#8B1A15',lbl:'> 14 km'},
+  ].map(l=>`<div class="mm-leg-item"><div class="mm-leg-dot" style="background:${l.bg};border:1px solid rgba(0,0,0,0.1)"></div><span class="mm-leg-lbl">${l.lbl}</span></div>`).join('');
+  /* Distance: most isolated on top */
+  const distSorted=[...DEPTS].sort((a,b)=>b.dist-a.dist);
+  /* Density: least equipped on top */
+  const densSorted=[...DEPTS].sort((a,b)=>a.dens-b.dens);
+  const maxDist=distSorted[0].dist,maxDens=Math.max(...DEPTS.map(d=>d.dens));
+  function bC(c,s,k,mV,u,dc){c.innerHTML=s.map(d=>{const p=(d[k]/mV*100).toFixed(1),v=d[k].toFixed(dc),si=parseFloat(p)>35;return`<div class="d-bar-row"><div class="d-bar-name" style="color:${d.col}">${d.nom}</div><div class="d-bar-track"><div class="d-bar-fill" style="width:${p}%;background:${d.col}">${si?`<span class="d-bar-val">${v}${u}</span>`:''}</div>${!si?`<span class="d-bar-val-out">${v}${u}</span>`:''}</div></div>`;}).join('');}
+  bC(document.getElementById('dept-dist-chart'),distSorted,'dist',maxDist,' km',2);
+  bC(document.getElementById('dept-dens-chart'),densSorted,'dens',maxDens,'',2);
+  const TYPES=[{short:'Urbain dense',hopCount:57,total:65,dist:2.41},{short:'Urbain densité intermédiaire',hopCount:91,total:503,dist:5.24},{short:"Rural sous forte influence d'un pôle",hopCount:3,total:1015,dist:10.75},{short:'Rural autonome peu dense',hopCount:24,total:835,dist:11.39},{short:"Rural sous faible influence d'un pôle",hopCount:7,total:1178,dist:11.84},{short:'Rural autonome très peu dense',hopCount:0,total:1519,dist:14.08}];
+  const maxTypeDist=14.08;
+  const propCols=['#BF3B30','#D45C50','#E88080','#CC5555','#D97070','#C0C0C0'];
+  const distCols=['#FDEAEA','#F5ADAC','#E07070','#C03838','#C03838','#8B1A15'];
+  /* Synchronized grid: each type gets one row with both cells side by side */
+  const syncGrid=document.getElementById('type-sync-grid');
+  TYPES.forEach((t,i)=>{
+    /* Left cell: proportion */
+    const pct=(t.hopCount/t.total*100),pctD=pct<0.1?'0 %':pct<1?pct.toFixed(1)+' %':pct.toFixed(0)+' %',fw=pct===0?0:Math.max(pct,1.5),si=pct>18;
+    const leftCell=document.createElement('div');
+    leftCell.className='type-sync-cell';
+    leftCell.innerHTML=`<div class="t-bar-lbl">${t.short}</div><div class="t-bar-meta">${t.hopCount} / ${t.total.toLocaleString('fr-FR')} communes</div><div class="t-bar-track"><div class="t-bar-fill" style="width:${fw.toFixed(1)}%;background:${propCols[i]}">${si?`<span class="t-bar-pct">${pctD}</span>`:''}</div>${!si?`<span class="t-bar-pct-out">${pctD}</span>`:''}</div>`;
+    /* Right cell: distance */
+    const dpct=(t.dist/maxTypeDist*100).toFixed(1),txCol=t.dist>9?'white':'#333';
+    const rightCell=document.createElement('div');
+    rightCell.className='type-sync-cell';
+    rightCell.innerHTML=`<div class="t-bar-lbl">${t.short}</div><div class="t-bar-meta">&nbsp;</div><div class="t-bar-track"><div class="t-bar-fill" style="width:${dpct}%;background:${distCols[i]}"><span class="t-bar-pct" style="color:${txCol}">${t.dist.toFixed(2)} km</span></div></div>`;
+    syncGrid.appendChild(leftCell);
+    syncGrid.appendChild(rightCell);
+  });
+}
+const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('vis');obs.unobserve(e.target);}}),{threshold:0.06});
+document.querySelectorAll('.fi').forEach(el=>obs.observe(el));
+document.addEventListener('DOMContentLoaded',()=>initInfogaphie());
+</script>
+</body>
+</html>

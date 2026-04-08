@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hôpitaux de soins aigus en Grand Est — Accueil</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800;900&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F6F4F1;--bg-alt:#FFFFFF;--border:#DEDBD5;--shadow:rgba(40,30,20,0.09);--text:#111;--muted:#555;--accent:#BF3B30;--accent-lt:#F9ECE9;--teal:#2A7F8F;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:400;line-height:1.7;overflow-x:hidden;}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:2000;display:flex;align-items:center;justify-content:space-between;padding:0 3rem;height:58px;background:rgba(246,244,241,0.96);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);box-shadow:0 2px 12px var(--shadow);}
+.nav-brand{font-family:'Sora',sans-serif;font-size:0.9rem;font-weight:700;color:var(--accent);}
+.nav-links{display:flex;gap:0;list-style:none;}
+.nav-links li a{display:block;padding:0 1.1rem;line-height:57px;font-size:0.72rem;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;color:var(--text);text-decoration:none;border-left:1px solid var(--border);transition:background 0.18s,color 0.18s;}
+.nav-links li:first-child a{border-left:none;}
+.nav-links li a:hover,.nav-links li a.active{background:var(--accent);color:white;}
+
+/* ── HERO ── */
+.hero{
+  min-height:100vh;display:flex;flex-direction:column;
+  justify-content:center;align-items:flex-start;
+  padding:8rem 6rem 5rem;
+  background:var(--bg);position:relative;overflow:hidden;
+}
+/* Grain overlay */
+.hero::before{
+  content:'';position:absolute;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  pointer-events:none;
+}
+/* Left vertical accent line */
+.hero-line{position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--accent);}
+/* Subtle radial glow */
+.hero-glow{position:absolute;top:0;right:0;width:50%;height:100%;pointer-events:none;background:radial-gradient(ellipse at 75% 35%,rgba(191,59,48,0.06) 0%,transparent 55%);}
+
+.hero-eyebrow{font-family:'DM Mono',monospace;font-size:0.75rem;letter-spacing:0.28em;text-transform:uppercase;color:var(--accent);margin-bottom:2rem;opacity:0;animation:fadeUp 0.8s 0.2s forwards;}
+
+/* Main title — very large */
+.hero-title{
+  font-family:'Sora',sans-serif;
+  font-size:clamp(3rem,7.5vw,8rem);
+  font-weight:900;
+  line-height:0.95;
+  letter-spacing:-0.02em;
+  margin-bottom:2.5rem;
+  opacity:0;animation:fadeUp 0.9s 0.35s forwards;
+}
+.hero-title .black{color:var(--text);}
+.hero-title .red{color:var(--accent);}
+
+/* Subtitle — bold, colored keywords */
+.hero-subtitle{
+  font-family:'Sora',sans-serif;
+  font-size:clamp(1.1rem,2vw,1.5rem);
+  font-weight:600;
+  line-height:1.55;
+  max-width:70ch;
+  margin-bottom:4rem;
+  color:#333;
+  opacity:0;animation:fadeUp 0.8s 0.55s forwards;
+}
+.hero-subtitle .hl-red{color:var(--accent);}
+.hero-subtitle .hl-teal{color:var(--teal);}
+
+/* Floating button */
+.hospital-btn-wrap{opacity:0;animation:fadeUp 0.8s 0.75s forwards;display:inline-block;}
+.hospital-btn{cursor:pointer;background:none;border:none;display:flex;flex-direction:column;align-items:center;gap:0.7rem;animation:floatY 2.6s ease-in-out infinite;}
+.hb-disc{width:92px;height:92px;border-radius:50%;background:white;border:2px solid var(--border);animation:pulseRing 2.2s ease-in-out infinite;display:flex;align-items:center;justify-content:center;transition:all 0.25s;position:relative;box-shadow:0 4px 20px rgba(191,59,48,0.12);}
+.hospital-btn:hover .hb-disc{transform:scale(1.08);border-color:var(--accent);box-shadow:0 8px 32px rgba(191,59,48,0.28);}
+.cross-v,.cross-h{position:absolute;background:var(--accent);border-radius:2px;}
+.cross-v{width:10px;height:38px;}.cross-h{width:38px;height:10px;}
+.hospital-btn:hover .cross-v,.hospital-btn:hover .cross-h{background:#8B1A15;}
+.hb-label{font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--muted);}
+@keyframes floatY{0%,100%{transform:translateY(0);}50%{transform:translateY(-12px);}}
+@keyframes pulseRing{0%{box-shadow:0 4px 20px rgba(191,59,48,0.12),0 0 0 0 rgba(191,59,48,0.28);}70%{box-shadow:0 4px 20px rgba(191,59,48,0.12),0 0 0 22px rgba(191,59,48,0);}100%{box-shadow:0 4px 20px rgba(191,59,48,0.12),0 0 0 0 rgba(191,59,48,0);}}
+
+/* ── DESCRIPTION ── */
+#desc{background:var(--bg-alt);border-top:1px solid var(--border);}
+.desc-inner{padding:6rem 6rem 5rem;width:100%;}
+
+/* Context blocks — full width */
+.ctx-block{border:1px solid var(--border);border-radius:12px;overflow:hidden;box-shadow:0 2px 12px var(--shadow);margin-bottom:2rem;background:white;width:100%;}
+.ctx-block-hd{padding:1.5rem 2.2rem 1.3rem;border-bottom:1px solid var(--border);background:#FAFAFA;display:flex;align-items:flex-start;gap:1rem;}
+.ctx-block-icon{width:44px;height:44px;border-radius:9px;background:var(--accent-lt);display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0;}
+.ctx-tag{font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--accent);margin-bottom:0.35rem;}
+.ctx-title{font-family:'Sora',sans-serif;font-size:1.25rem;font-weight:700;line-height:1.3;color:var(--text);}
+.ctx-body{padding:1.8rem 2.2rem;font-size:1.05rem;line-height:1.9;color:#222;width:100%;}
+.ctx-body strong{color:var(--accent);}
+.ctx-body p+p{margin-top:1rem;}
+.type-pills{display:flex;flex-wrap:wrap;gap:0.45rem;margin-top:1.2rem;}
+.type-pill{font-size:0.88rem;padding:0.28rem 0.9rem;background:var(--accent-lt);border:1px solid rgba(191,59,48,0.22);border-radius:20px;color:var(--accent);font-weight:500;}
+
+/* Stats — full width */
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border:1px solid var(--border);border-radius:12px;overflow:hidden;background:white;box-shadow:0 2px 12px var(--shadow);margin-bottom:4rem;width:100%;}
+.sstat{padding:2.2rem 2.4rem;border-right:1px solid var(--border);transition:background 0.2s;}
+.sstat:last-child{border-right:none;}
+.sstat:hover{background:var(--accent-lt);}
+.ss-n{font-family:'Sora',sans-serif;font-size:3rem;font-weight:800;color:var(--accent);display:block;margin-bottom:0.4rem;line-height:1;}
+.ss-l{font-size:0.98rem;color:var(--muted);line-height:1.5;}
+
+/* Cards — full width grid */
+.cards-heading{font-family:'DM Mono',monospace;font-size:0.68rem;letter-spacing:0.24em;text-transform:uppercase;color:var(--accent);margin-bottom:1.8rem;}
+.cards-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;width:100%;}
+.page-card{background:white;border:1px solid var(--border);border-radius:14px;padding:2.5rem 2.2rem;text-decoration:none;color:var(--text);display:flex;flex-direction:column;gap:1.1rem;box-shadow:0 2px 16px var(--shadow);position:relative;overflow:hidden;transition:transform 0.22s,box-shadow 0.22s,border-color 0.22s;}
+.page-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:var(--accent);transform:scaleX(0);transform-origin:left;transition:transform 0.28s cubic-bezier(0.4,0,0.2,1);}
+.page-card:hover{transform:translateY(-5px);box-shadow:0 14px 40px rgba(40,30,20,0.13);border-color:var(--accent);}
+.page-card:hover::before{transform:scaleX(1);}
+.pc-icon-wrap{width:58px;height:58px;border-radius:11px;background:var(--accent-lt);display:flex;align-items:center;justify-content:center;font-size:1.6rem;}
+.pc-title{font-family:'Sora',sans-serif;font-size:1.4rem;font-weight:700;}
+.pc-desc{font-size:1rem;line-height:1.78;color:#444;}
+.pc-cta{margin-top:auto;display:inline-flex;align-items:center;gap:0.45rem;font-family:'Sora',sans-serif;font-size:0.9rem;font-weight:700;color:var(--accent);}
+.pc-arrow{width:30px;height:30px;border-radius:50%;border:1.5px solid var(--accent);display:flex;align-items:center;justify-content:center;font-size:0.9rem;transition:transform 0.2s,background 0.2s;}
+.page-card:hover .pc-arrow{transform:translateX(3px);background:var(--accent);color:white;}
+
+footer{padding:1.4rem 6rem;border-top:1px solid var(--border);background:white;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;}
+.footer-brand{font-family:'Sora',sans-serif;color:var(--accent);font-size:0.9rem;font-weight:700;}
+.footer-center{font-family:'Sora',sans-serif;font-size:0.82rem;color:#bbb;font-weight:300;letter-spacing:0.04em;}
+.footer-right{font-family:'Nunito',sans-serif;font-size:0.82rem;color:var(--teal);font-weight:300;letter-spacing:0.03em;}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:none;}}
+.fi{opacity:0;transform:translateY(22px);transition:opacity 0.7s ease,transform 0.7s ease;}
+.fi.vis{opacity:1;transform:none;}
+.fi:nth-child(2){transition-delay:0.1s;}.fi:nth-child(3){transition-delay:0.2s;}.fi:nth-child(4){transition-delay:0.3s;}.fi:nth-child(5){transition-delay:0.4s;}
+
+@media(max-width:900px){
+  nav{padding:0 1.5rem;}.nav-links li a{padding:0 0.7rem;}
+  .hero{padding:7rem 2rem 4rem;}
+  .desc-inner{padding:4rem 2rem 4rem;}
+  .cards-grid{grid-template-columns:1fr;}
+  .stats-row{grid-template-columns:1fr;}
+  .sstat{border-right:none;border-bottom:1px solid var(--border);}
+  .sstat:last-child{border-bottom:none;}
+  footer{padding:1.4rem 2rem;}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-brand">Grand Est · Santé · Soins aigus</div>
+  <ul class="nav-links">
+    <li><a href="index.html" class="active">Accueil</a></li>
+    <li><a href="carte_graphique.html">Carte &amp; Graphique</a></li>
+    <li><a href="infographie.html">Infographie</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="top">
+  <div class="hero-line"></div>
+  <div class="hero-glow"></div>
+
+  <p class="hero-eyebrow">Datavisualisation · Santé · Grand Est</p>
+
+  <h1 class="hero-title">
+    <span class="black">À quelle distance</span><br>
+    <span class="black">est </span><span class="red">votre vie&nbsp;?</span>
+  </h1>
+
+  <p class="hero-subtitle">
+    Répartition et accessibilité des
+    <span class="hl-red">hôpitaux de soins aigus</span>
+    en <span class="hl-teal">Grand Est</span>
+  </p>
+
+  <div class="hospital-btn-wrap">
+    <button class="hospital-btn"
+      onclick="document.getElementById('desc').scrollIntoView({behavior:'smooth'});"
+      aria-label="Découvrir">
+      <div class="hb-disc"><div class="cross-v"></div><div class="cross-h"></div></div>
+      <span class="hb-label">Découvrir</span>
+    </button>
+  </div>
+</section>
+
+<!-- DESCRIPTION -->
+<section id="desc">
+  <div class="desc-inner">
+
+    <div class="ctx-block fi">
+      <div class="ctx-block-hd">
+        <div class="ctx-block-icon">🏥</div>
+        <div>
+          <div class="ctx-tag">Définition</div>
+          <div class="ctx-title">Qu'est-ce qu'un hôpital de soins aigus ?</div>
+        </div>
+      </div>
+      <div class="ctx-body">
+        <p>Les <strong>hôpitaux de soins aigus et d'hospitalisation</strong> regroupent les établissements capables de prendre en charge des patients nécessitant une intervention médicale ou chirurgicale rapide et intensive. Contrairement aux cabinets de médecine générale, ces structures disposent d'équipes pluridisciplinaires, de plateaux techniques complets (imagerie, bloc opératoire, réanimation) et de spécialistes mobilisables en urgence.</p>
+      </div>
+    </div>
+
+    <div class="ctx-block fi">
+      <div class="ctx-block-hd">
+        <div class="ctx-block-icon">📋</div>
+        <div>
+          <div class="ctx-tag">Périmètre de l'étude</div>
+          <div class="ctx-title">Quels établissements sont inclus ?</div>
+        </div>
+      </div>
+      <div class="ctx-body">
+        <p>Cette étude couvre six types d'établissements : <strong>Centres Hospitaliers (C.H.)</strong>, <strong>Centres Hospitaliers Régionaux (C.H.R.)</strong>, <strong>établissements de soins chirurgicaux</strong>, <strong>de soins médicaux</strong>, <strong>de soins pluridisciplinaires</strong>, <strong>anciens hôpitaux locaux</strong>. Ces établissements sont recensés dans le fichier national FINESS (2025).</p>
+        <div class="type-pills">
+          <span class="type-pill">Centre Hospitalier</span>
+          <span class="type-pill">C.H.R.</span>
+          <span class="type-pill">Soins chirurgicaux</span>
+          <span class="type-pill">Soins médicaux</span>
+          <span class="type-pill">Soins pluridisciplinaires</span>
+          <span class="type-pill">Ancien hôpital local</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="ctx-block fi">
+      <div class="ctx-block-hd">
+        <div class="ctx-block-icon">❓</div>
+        <div>
+          <div class="ctx-tag">Motivation</div>
+          <div class="ctx-title">Pourquoi ce sujet ?</div>
+        </div>
+      </div>
+      <div class="ctx-body">
+        <p>L'accessibilité aux soins est souvent mesurée en prenant en compte le nombre de cabinets de médecine générale. Pourtant, les urgences vitales, les maladies aiguës, les pathologies chirurgicales et les affections sévères ne peuvent être traitées que dans un hôpital de soins aigus — là où se trouvent les spécialistes, les équipements et le personnel médical nécessaires.</p>
+        <p>Ces situations engagent fréquemment le pronostic vital et exigent une prise en charge dans les plus brefs délais. <strong>La distance au plus proche établissement</strong> devient alors un facteur déterminant pour l'accès aux soins et, in fine, pour la survie des patients. Cette étude cartographie et analyse cette accessibilité à l'échelle de chaque commune du Grand Est.</p>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-row fi">
+      <div class="sstat"><span class="ss-n" id="cnt-hop">—</span><div class="ss-l">Hôpitaux de soins aigus recensés</div></div>
+      <div class="sstat"><span class="ss-n" id="cnt-com">—</span><div class="ss-l">Communes analysées</div></div>
+      <div class="sstat"><span class="ss-n">10</span><div class="ss-l">Départements du Grand Est</div></div>
+    </div>
+
+    <!-- Nav cards -->
+    <p class="cards-heading fi">Explorer l'étude</p>
+    <div class="cards-grid fi">
+      <a href="carte_graphique.html" class="page-card">
+        <div class="pc-icon-wrap">🗺️</div>
+        <div class="pc-title">Carte &amp; Graphique</div>
+        <p class="pc-desc">Localisation des hôpitaux et distance d'accès depuis chaque commune. Analyse des disparités entre milieux urbains et ruraux.</p>
+        <div class="pc-cta">Explorer <div class="pc-arrow">→</div></div>
+      </a>
+      <a href="infographie.html" class="page-card">
+        <div class="pc-icon-wrap" style="background:#FFF3F2;">📊</div>
+        <div class="pc-title">Infographie</div>
+        <p class="pc-desc">Résultats clés, disparités départementales et entre types d'espace, politiques publiques pour l'accès aux soins aigus.</p>
+        <div class="pc-cta">Voir les résultats <div class="pc-arrow">→</div></div>
+      </a>
+    </div>
+
+  </div>
+</section>
+
+<footer>
+  <span class="footer-brand">Grand Est · Santé · Soins aigus</span>
+  <span class="footer-center">L'égalité face à la santé</span>
+  <span class="footer-right">Projet by SIM</span>
+</footer>
+
+<script>
+const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('vis');obs.unobserve(e.target);}}),{threshold:0.08});
+document.querySelectorAll('.fi').forEach(el=>obs.observe(el));
+let counted=false;
+const sObs=new IntersectionObserver(en=>{if(en[0].isIntersecting&&!counted){counted=true;const dur=1600;function a(el,t){const s=performance.now();const r=n=>{const p=Math.min((n-s)/dur,1);const e=p<0.5?2*p*p:-1+(4-2*p)*p;el.textContent=Math.floor(t*e).toLocaleString('fr-FR');if(p<1)requestAnimationFrame(r);else el.textContent=t.toLocaleString('fr-FR');};requestAnimationFrame(r);}a(document.getElementById('cnt-hop'),182);a(document.getElementById('cnt-com'),5115);}},{threshold:0.4});
+const sr=document.querySelector('.stats-row');if(sr)sObs.observe(sr);
+</script>
+</body>
+</html>
