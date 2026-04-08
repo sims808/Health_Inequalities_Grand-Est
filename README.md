@@ -52,8 +52,8 @@ Ce site web analyse la **répartition et l'accessibilité des hôpitaux de soins
 
 ## Technologies
 
-- **Leaflet.js** (v1.9.4) — carte interactive
-- **D3.js** (v7.8.5) — nuage de points
+- **Leaflet.js**  — carte interactive
+- **D3.js**  — nuage de points
 
 ---
 
